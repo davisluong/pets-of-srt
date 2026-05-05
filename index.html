@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SR&T Pet Quiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #c94b4b 0%, #4b134f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: #fffef7;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            border: 3px solid #d4af37;
+        }
+        h1 { color: #c94b4b; text-align: center; margin-bottom: 10px; font-size: 2.5em; }
+        h2 { color: #232020; text-align: center; margin-bottom: 10px; font-size: 1.8em; }
+        .subtitle { text-align: center; color: #2d5016; margin-bottom: 30px; font-size: 1.1em; }
+        .screen { display: none; }
+        .screen.active { display: block; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #2d5016; font-weight: 600; }
+        input[type="text"] {
+            width: 100%; padding: 12px; border: 2px solid #d4af37;
+            border-radius: 8px; font-size: 16px; background: white;
+        }
+        input[type="text"]:focus { outline: none; border-color: #c94b4b; }
+        button {
+            background: #c94b4b; color: white; border: none;
+            padding: 14px 28px; border-radius: 8px; font-size: 16px;
+            font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px;
+            transition: all 0.3s;
+        }
+        button:hover { background: #a83939; transform: translateY(-2px); }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .option {
+            background: white; padding: 20px; border-radius: 12px;
+            border: 3px solid #d4af37; cursor: pointer; transition: all 0.3s;
+            text-align: center; font-weight: 600; color: #2d5016;
+        }
+        .option:hover { border-color: #c94b4b; background: #fff5f5; transform: translateY(-2px); }
+        .option.selected { border-color: #c94b4b; background: #c94b4b; color: white; }
+        .progress { background: #e8dcc4; height: 8px; border-radius: 4px; margin-bottom: 20px; }
+        .progress-bar { background: linear-gradient(90deg, #c94b4b 0%, #2d5016 100%); height: 100%; transition: width 0.3s; }
+        .waiting { text-align: center; padding: 60px 40px; color: #2d5016; }
+        .waiting h2 { color: #c94b4b; margin-bottom: 30px; font-size: 2em; }
+        .hourglass { font-size: 80px; animation: flip 2s infinite; display: inline-block; margin: 20px 0; }
+        @keyframes flip { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } }
+        .waiting-message { font-size: 1.2em; color: #2d5016; margin-top: 20px; line-height: 1.6; }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .question-header {
+            background: linear-gradient(135deg, #c94b4b 0%, #2d5016 100%);
+            color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center;
+        }
+        .question-number { font-size: 0.9em; opacity: 0.9; margin-bottom: 10px; }
+        .question-text { font-size: 1.4em; font-weight: 600; }
+        .question-image {
+            max-width: 100%; max-height: 300px; border-radius: 12px;
+            margin-bottom: 20px; object-fit: cover;
+            border: 3px solid #d4af37; display: block; margin-left: auto; margin-right: auto;
+        }
+        .error-message { background: #ffe6e6; color: #8b0000; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: none; }
+        .error-message.show { display: block; }
+        .info-box { background: #f0f8e8; padding: 15px; border-radius: 8px; margin-top: 20px; border: 2px solid #2d5016; }
+        .info-box h4 { color: #c94b4b; margin-bottom: 10px; }
+        .info-box p { color: #2d5016; margin-bottom: 5px; }
+        .selection-status {
+            text-align: center; margin-top: 15px; padding: 10px;
+            background: #f0f8e8; border-radius: 8px; color: #2d5016; font-weight: 600;
+        }
+        .your-score {
+            background: #e7f3ff; padding: 20px; border-radius: 12px;
+            text-align: center; margin-bottom: 30px; border: 2px solid #667eea;
+        }
+        .your-score h3 { color: #c94b4b; font-size: 1.5em; margin-bottom: 10px; }
+        .your-score .score { font-size: 2.5em; font-weight: 700; color: #2d5016; }
+        .thank-you {
+            text-align: center; margin-top: 30px; padding: 20px;
+            background: #f0f8e8; border-radius: 12px; border: 2px solid #2d5016;
+        }
+        .thank-you h3 { color: #c94b4b; margin-bottom: 10px; }
+        .review-container { margin-top: 20px; }
+        .review-container h3 { color: #c94b4b; text-align: center; margin-bottom: 20px; font-size: 1.4em; border-bottom: 2px solid #d4af37; padding-bottom: 10px; }
+        .review-item { background: white; border-radius: 12px; padding: 20px; margin-bottom: 18px; border: 2px solid #e0e0e0; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+        .review-item .review-q-number { font-size: 0.85em; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .review-item .review-q-text { font-size: 1.1em; font-weight: 700; color: #232020; margin-bottom: 14px; }
+        .review-item .review-q-image { max-width: 100%; max-height: 160px; border-radius: 8px; margin-bottom: 12px; object-fit: cover; border: 2px solid #d4af37; }
+        .review-answers { display: flex; flex-direction: column; gap: 8px; }
+        .review-answer-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; font-size: 0.97em; }
+        .review-answer-row .label { font-weight: 700; min-width: 110px; font-size: 0.9em; }
+        .review-answer-row .answer-text { flex: 1; }
+        .row-correct { background: #e6f9ee; border: 1.5px solid #27ae60; }
+        .row-correct .label { color: #27ae60; }
+        .row-player-correct { background: #e6f9ee; border: 1.5px solid #27ae60; }
+        .row-player-correct .label { color: #27ae60; }
+        .row-player-wrong { background: #ffeaea; border: 1.5px solid #e74c3c; }
+        .row-player-wrong .label { color: #e74c3c; }
+        .row-not-answered { background: #fff8e1; border: 1.5px solid #f39c12; }
+        .row-not-answered .label { color: #f39c12; }
+        .review-item.all-correct { border-color: #27ae60; }
+        .review-item.all-wrong { border-color: #e74c3c; }
+        .review-item.no-answer { border-color: #f39c12; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="joinScreen" class="screen active">
+            <h1>🐾 Pet Quiz 🐾</h1>
+            <h2>SR&T Social Segment</h2>
+            <br>
+            <div class="error-message" id="joinError"></div>
+            <div class="input-group">
+                <label>Your Name:</label>
+                <input type="text" id="playerName" placeholder="Enter your name">
+            </div>
+            <button onclick="joinQuiz()">Join Quiz</button>
+            <div class="info-box">
+                <h4>Welcome!</h4>
+                <p>Enter your name and wait for the moderator to start the quiz.</p>
+                <p>Make sure you can see the moderator's screen!</p>
+            </div>
+        </div>
+
+        <div id="waitingScreen" class="screen">
+            <div class="waiting">
+                <h2>Welcome, <span id="waitingPlayerName"></span>!</h2>
+                <div class="hourglass">⏳</div>
+                <div class="waiting-message">
+                    <p class="pulse"><strong>Please wait...</strong></p>
+                    <p style="margin-top: 15px;">The moderator will start the quiz shortly.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="quizScreen" class="screen">
+            <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+            <div class="question-header">
+                <div class="question-number" id="questionNumber">Question 1 of 5</div>
+                <div class="question-text" id="questionText">Loading question...</div>
+            </div>
+            <img id="questionImage" class="question-image" style="display:none;" alt="Question image">
+            <div class="options" id="optionsContainer"></div>
+            <div class="selection-status" id="selectionStatus">Click an option to select your answer.</div>
+        </div>
+
+        <div id="resultsScreen" class="screen">
+            <h1>🏆 Final Results 🏆</h1>
+            <p class="subtitle">Great job everyone!</p>
+            <div class="your-score">
+                <h3>Your Score</h3>
+                <div class="score" id="yourScore">0 points</div>
+            </div>
+            <div class="review-container">
+                <h3>📋 Question Review</h3>
+                <div id="questionReview"></div>
+            </div>
+            <div class="thank-you">
+                <h3>🎉 Thank You for Playing! 🎉</h3>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, onValue, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOpVXZVm9qKMqxDqRQw55BgDXhbh-9ibI",
+            authDomain: "pets-of-srt.firebaseapp.com",
+            databaseURL: "https://pets-of-srt-default-rtdb.firebaseio.com",
+            projectId: "pets-of-srt",
+            storageBucket: "pets-of-srt.firebasestorage.app",
+            messagingSenderId: "554144591601",
+            appId: "1:554144591601:web:be258c9af4044228174350"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const gameRef = ref(db, 'game');
+
+        let localState = {
+            playerName: '',
+            playerId: 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+            answers: [],
+            selectedAnswer: null
+        };
+
+        let gameState = { questions: [], currentQuestion: 0, status: 'waiting' };
+
+        onValue(gameRef, (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+
+            if (data.questions) {
+                gameState.questions = data.questions;
+                if (localState.answers.length === 0) {
+                    localState.answers = new Array(data.questions.length).fill(null);
+                }
+            }
+
+            if (data.status === 'ready' && document.getElementById('waitingScreen').classList.contains('active')) {
+                document.getElementById('waitingScreen').classList.remove('active');
+                document.getElementById('quizScreen').classList.add('active');
+                gameState.currentQuestion = 0;
+                displayQuestion();
+            }
+
+            if (data.currentQuestion !== undefined && data.currentQuestion !== gameState.currentQuestion && data.status === 'ready') {
+                if (localState.selectedAnswer !== null) {
+                    localState.answers[gameState.currentQuestion] = localState.selectedAnswer;
+                }
+                gameState.currentQuestion = data.currentQuestion;
+                localState.selectedAnswer = null;
+
+                if (gameState.currentQuestion >= gameState.questions.length) {
+                    saveScore();
+                } else {
+                    displayQuestion();
+                }
+            }
+
+            if (data.status === 'ended') {
+                if (localState.selectedAnswer !== null && gameState.currentQuestion < gameState.questions.length) {
+                    localState.answers[gameState.currentQuestion] = localState.selectedAnswer;
+                }
+                saveScore();
+                showResults();
+            }
+        });
+
+        window.joinQuiz = function() {
+            const name = document.getElementById('playerName').value.trim();
+            if (!name) {
+                const errorEl = document.getElementById('joinError');
+                errorEl.textContent = 'Please enter your name';
+                errorEl.classList.add('show');
+                setTimeout(() => errorEl.classList.remove('show'), 3000);
+                return;
+            }
+            localState.playerName = name;
+            update(ref(db, 'game/players/' + localState.playerId), { name: name });
+            document.getElementById('joinScreen').classList.remove('active');
+            document.getElementById('waitingScreen').classList.add('active');
+            document.getElementById('waitingPlayerName').textContent = name;
+        };
+
+        function displayQuestion() {
+            if (gameState.currentQuestion >= gameState.questions.length) { saveScore(); return; }
+            const q = gameState.questions[gameState.currentQuestion];
+            const progress = ((gameState.currentQuestion + 1) / gameState.questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('questionNumber').textContent = 'Question ' + (gameState.currentQuestion + 1) + ' of ' + gameState.questions.length;
+            document.getElementById('questionText').textContent = q.question;
+
+            const imgEl = document.getElementById('questionImage');
+            if (q.image) {
+                imgEl.src = q.image;
+                imgEl.style.display = 'block';
+            } else {
+                imgEl.style.display = 'none';
+            }
+
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            const savedAnswer = localState.answers[gameState.currentQuestion];
+            if (savedAnswer !== null && savedAnswer !== undefined) localState.selectedAnswer = savedAnswer;
+
+            q.options.forEach((option, index) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                if (localState.selectedAnswer === index) div.classList.add('selected');
+                div.textContent = option;
+                div.onclick = () => selectAnswer(index);
+                container.appendChild(div);
+            });
+            updateSelectionStatus();
+        }
+
+        function selectAnswer(index) {
+            localState.selectedAnswer = index;
+            localState.answers[gameState.currentQuestion] = index;
+            document.querySelectorAll('.option').forEach((opt, i) => {
+                opt.classList.remove('selected');
+                if (i === index) opt.classList.add('selected');
+            });
+            updateSelectionStatus();
+        }
+
+        function updateSelectionStatus() {
+            const statusEl = document.getElementById('selectionStatus');
+            if (localState.selectedAnswer !== null) {
+                statusEl.textContent = '✓ Answer selected! You can change it until the moderator moves to the next question.';
+                statusEl.style.background = '#e7f3ff';
+            } else {
+                statusEl.textContent = 'Click an option to select your answer.';
+                statusEl.style.background = '#f0f8e8';
+            }
+        }
+
+        function calculateScore() {
+            let correct = 0;
+            gameState.questions.forEach((q, index) => {
+                if (localState.answers[index] === q.correctIndex) correct++;
+            });
+            return { score: correct * 100, correct, total: gameState.questions.length };
+        }
+
+        function saveScore() {
+            const scoreData = calculateScore();
+            update(ref(db, 'game/scores/' + localState.playerId), {
+                name: localState.playerName,
+                score: scoreData.score,
+                correct: scoreData.correct,
+                total: scoreData.total
+            });
+        }
+
+        function buildQuestionReview() {
+            const reviewContainer = document.getElementById('questionReview');
+            reviewContainer.innerHTML = '';
+            gameState.questions.forEach((q, index) => {
+                const playerAnswerIndex = localState.answers[index];
+                const correctIndex = q.correctIndex;
+                const playerAnswerText = (playerAnswerIndex !== null && playerAnswerIndex !== undefined) ? q.options[playerAnswerIndex] : null;
+                const correctAnswerText = q.options[correctIndex];
+                const isCorrect = playerAnswerIndex === correctIndex;
+                const notAnswered = playerAnswerIndex === null || playerAnswerIndex === undefined;
+
+                const item = document.createElement('div');
+                item.className = 'review-item ' + (notAnswered ? 'no-answer' : isCorrect ? 'all-correct' : 'all-wrong');
+
+                let imgHtml = '';
+                if (q.image) imgHtml = '<img class="review-q-image" src="' + q.image + '" alt="Q' + (index+1) + '">';
+
+                const playerRowClass = notAnswered ? 'row-not-answered' : isCorrect ? 'row-player-correct' : 'row-player-wrong';
+                const playerLabel = notAnswered ? '⚠️ Your Answer:' : isCorrect ? '🎉 Your Answer:' : '❌ Your Answer:';
+                const playerText = notAnswered ? '<em>No answer selected</em>' : isCorrect ? playerAnswerText + ' — Correct!' : playerAnswerText;
+
+                item.innerHTML = `
+                    <div class="review-q-number">Question ${index + 1}</div>
+                    <div class="review-q-text">${q.question}</div>
+                    ${imgHtml}
+                    <div class="review-answers">
+                        <div class="review-answer-row row-correct">
+                            <span class="label">✅ Correct Answer:</span>
+                            <span class="answer-text">${correctAnswerText}</span>
+                        </div>
+                        <div class="review-answer-row ${playerRowClass}">
+                            <span class="label">${playerLabel}</span>
+                            <span class="answer-text">${playerText}</span>
+                        </div>
+                    </div>
+                `;
+                reviewContainer.appendChild(item);
+            });
+        }
+
+        function showResults() {
+            document.getElementById('quizScreen').classList.remove('active');
+            document.getElementById('waitingScreen').classList.remove('active');
+            document.getElementById('resultsScreen').classList.add('active');
+            const scoreData = calculateScore();
+            document.getElementById('yourScore').textContent = scoreData.score + ' points (' + scoreData.correct + '/' + scoreData.total + ')';
+            buildQuestionReview();
+        }
+    </script>
+</body>
+</html>
