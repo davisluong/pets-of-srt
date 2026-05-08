@@ -7,7 +7,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #c94b4b 0%, #4b134f 100%); min-height: 100vh; padding: 20px; }
-        .container { background: #fffef7; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 800px; margin: 0 auto; padding: 40px; border: 3px solid #d4af37; }
+        .container { background: #fffef7; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 900px; margin: 0 auto; padding: 40px; border: 3px solid #d4af37; }
         h1 { color: #c94b4b; text-align: center; margin-bottom: 10px; font-size: 2.5em; }
         .subtitle { text-align: center; color: #2d5016; margin-bottom: 30px; font-size: 1.1em; }
         .screen { display: none; }
@@ -19,10 +19,33 @@
         .option { background: white; padding: 20px; border-radius: 12px; border: 3px solid #d4af37; text-align: center; font-weight: 600; color: #2d5016; font-size: 1.1em; }
         .progress { background: #e8dcc4; height: 8px; border-radius: 4px; margin-bottom: 20px; }
         .progress-bar { background: linear-gradient(90deg, #c94b4b 0%, #2d5016 100%); height: 100%; transition: width 0.3s; }
-        .question-header { background: linear-gradient(135deg, #c94b4b 0%, #2d5016 100%); color: white; padding: 30px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
-        .question-number { font-size: 1.1em; opacity: 0.9; margin-bottom: 15px; }
-        .question-text { font-size: 1.8em; font-weight: 600; line-height: 1.5; white-space: pre-line; }
-        .question-image { display: block; max-width: 100%; max-height: 360px; border-radius: 14px; margin: 0 auto 24px auto; object-fit: cover; border: 3px solid #d4af37; box-shadow: 0 4px 20px rgba(0,0,0,0.18); }
+
+        /* ── Side-by-side question layout (moderator) ── */
+        .question-header {
+            background: linear-gradient(135deg, #c94b4b 0%, #2d5016 100%);
+            color: white; padding: 30px; border-radius: 12px; margin-bottom: 20px;
+        }
+        .question-number { font-size: 1.1em; opacity: 0.9; margin-bottom: 15px; text-align: center; }
+        .question-body {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .question-text-wrap { flex: 1; }
+        /* Reduced 2 sizes: was 1.8em → now 1.4em */
+        .question-text { font-size: 1.4em; font-weight: 600; line-height: 1.5; white-space: pre-line; }
+        .question-image-wrap { flex-shrink: 0; }
+        .question-image {
+            width: 280px;
+            height: 220px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 3px solid #d4af37;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            display: block;
+        }
+        .question-body.no-image .question-text { text-align: center; }
+
         .leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: white; border-radius: 12px; margin-bottom: 15px; border-left: 6px solid #d4af37; }
         .leaderboard-item.first { background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); border-left-width: 8px; }
         .leaderboard-item.second { background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%); border-left-width: 8px; }
@@ -52,6 +75,11 @@
         @keyframes scaleIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .countdown-number { font-size: 3em; font-weight: 900; color: white; line-height: 1; }
         .countdown-label { font-size: .75em; color: rgba(255,255,255,0.85); margin-top: 8px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+
+        @media (max-width: 640px) {
+            .question-body { flex-direction: column; }
+            .question-image { width: 100%; height: 220px; }
+        }
     </style>
 </head>
 <body>
@@ -87,9 +115,15 @@
             <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
             <div class="question-header">
                 <div class="question-number" id="questionNumber">Question 1</div>
-                <div class="question-text" id="questionText">Loading...</div>
+                <div class="question-body" id="questionBody">
+                    <div class="question-text-wrap">
+                        <div class="question-text" id="questionText">Loading...</div>
+                    </div>
+                    <div class="question-image-wrap" id="questionImageWrap" style="display:none;">
+                        <img id="questionImage" class="question-image" alt="Question image">
+                    </div>
+                </div>
             </div>
-            <img id="questionImage" class="question-image" style="display:none;" alt="Question image">
             <div class="options" id="optionsContainer"></div>
             <button id="nextBtn" onclick="handleNextQuestion()" style="background:#2d5016; margin-top:30px;">Next Question ➡️</button>
             <button id="showResultsBtn" onclick="showResults()" style="display:none; margin-top:30px; background:#c94b4b; font-size:1.2em;">Show Final Results 🏆</button>
@@ -162,9 +196,17 @@
             document.getElementById('questionNumber').textContent = 'Question ' + (gameState.currentQuestion + 1) + ' of ' + gameState.questions.length;
             document.getElementById('questionText').textContent = q.question;
 
+            const imgWrap = document.getElementById('questionImageWrap');
             const imgEl = document.getElementById('questionImage');
-            if (q.image) { imgEl.src = q.image; imgEl.style.display = 'block'; }
-            else { imgEl.style.display = 'none'; imgEl.src = ''; }
+            const body = document.getElementById('questionBody');
+            if (q.image) {
+                imgEl.src = q.image;
+                imgWrap.style.display = 'block';
+                body.classList.remove('no-image');
+            } else {
+                imgWrap.style.display = 'none';
+                body.classList.add('no-image');
+            }
 
             const container = document.getElementById('optionsContainer');
             container.innerHTML = '';
