@@ -6,24 +6,8 @@
     <title>SR&T Pet Quiz</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #c94b4b 0%, #4b134f 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .container {
-            background: #fffef7;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 800px;
-            width: 100%;
-            padding: 40px;
-            border: 3px solid #d4af37;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #c94b4b 0%, #4b134f 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .container { background: #fffef7; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 800px; width: 100%; padding: 40px; border: 3px solid #d4af37; }
         h1 { color: #c94b4b; text-align: center; margin-bottom: 10px; font-size: 2.5em; }
         h2 { color: #232020; text-align: center; margin-bottom: 10px; font-size: 1.8em; }
         .subtitle { text-align: center; color: #2d5016; margin-bottom: 30px; font-size: 1.1em; }
@@ -31,24 +15,12 @@
         .screen.active { display: block; }
         .input-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; color: #2d5016; font-weight: 600; }
-        input[type="text"] {
-            width: 100%; padding: 12px; border: 2px solid #d4af37;
-            border-radius: 8px; font-size: 16px; background: white;
-        }
+        input[type="text"] { width: 100%; padding: 12px; border: 2px solid #d4af37; border-radius: 8px; font-size: 16px; background: white; }
         input[type="text"]:focus { outline: none; border-color: #c94b4b; }
-        button {
-            background: #c94b4b; color: white; border: none;
-            padding: 14px 28px; border-radius: 8px; font-size: 16px;
-            font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px;
-            transition: all 0.3s;
-        }
+        button { background: #c94b4b; color: white; border: none; padding: 14px 28px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; transition: all 0.3s; }
         button:hover { background: #a83939; transform: translateY(-2px); }
         .options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .option {
-            background: white; padding: 20px; border-radius: 12px;
-            border: 3px solid #d4af37; cursor: pointer; transition: all 0.3s;
-            text-align: center; font-weight: 600; color: #2d5016;
-        }
+        .option { background: white; padding: 20px; border-radius: 12px; border: 3px solid #d4af37; cursor: pointer; transition: all 0.3s; text-align: center; font-weight: 600; color: #2d5016; }
         .option:hover { border-color: #c94b4b; background: #fff5f5; transform: translateY(-2px); }
         .option.selected { border-color: #c94b4b; background: #c94b4b; color: white; }
         .progress { background: #e8dcc4; height: 8px; border-radius: 4px; margin-bottom: 20px; }
@@ -60,46 +32,30 @@
         .waiting-message { font-size: 1.2em; color: #2d5016; margin-top: 20px; line-height: 1.6; }
         .pulse { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .question-header {
-            background: linear-gradient(135deg, #c94b4b 0%, #2d5016 100%);
-            color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center;
-        }
+        .question-header { background: linear-gradient(135deg, #c94b4b 0%, #2d5016 100%); color: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; text-align: center; }
         .question-number { font-size: 0.9em; opacity: 0.9; margin-bottom: 10px; }
-        .question-text { font-size: 1.4em; font-weight: 600; }
-        .question-image {
-            max-width: 100%; max-height: 300px; border-radius: 12px;
-            margin-bottom: 20px; object-fit: cover;
-            border: 3px solid #d4af37; display: block; margin-left: auto; margin-right: auto;
-        }
+        .question-text { font-size: 1.4em; font-weight: 600; line-height: 1.6; white-space: pre-line; }
+        .question-image { display: block; max-width: 100%; max-height: 320px; border-radius: 14px; margin: 0 auto 20px auto; object-fit: cover; border: 3px solid #d4af37; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
         .error-message { background: #ffe6e6; color: #8b0000; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: none; }
         .error-message.show { display: block; }
         .info-box { background: #f0f8e8; padding: 15px; border-radius: 8px; margin-top: 20px; border: 2px solid #2d5016; }
         .info-box h4 { color: #c94b4b; margin-bottom: 10px; }
         .info-box p { color: #2d5016; margin-bottom: 5px; }
-        .selection-status {
-            text-align: center; margin-top: 15px; padding: 10px;
-            background: #f0f8e8; border-radius: 8px; color: #2d5016; font-weight: 600;
-        }
-        .your-score {
-            background: #e7f3ff; padding: 20px; border-radius: 12px;
-            text-align: center; margin-bottom: 30px; border: 2px solid #667eea;
-        }
+        .selection-status { text-align: center; margin-top: 15px; padding: 10px; background: #f0f8e8; border-radius: 8px; color: #2d5016; font-weight: 600; }
+        .your-score { background: #e7f3ff; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 30px; border: 2px solid #667eea; }
         .your-score h3 { color: #c94b4b; font-size: 1.5em; margin-bottom: 10px; }
         .your-score .score { font-size: 2.5em; font-weight: 700; color: #2d5016; }
-        .thank-you {
-            text-align: center; margin-top: 30px; padding: 20px;
-            background: #f0f8e8; border-radius: 12px; border: 2px solid #2d5016;
-        }
+        .thank-you { text-align: center; margin-top: 30px; padding: 20px; background: #f0f8e8; border-radius: 12px; border: 2px solid #2d5016; }
         .thank-you h3 { color: #c94b4b; margin-bottom: 10px; }
         .review-container { margin-top: 20px; }
         .review-container h3 { color: #c94b4b; text-align: center; margin-bottom: 20px; font-size: 1.4em; border-bottom: 2px solid #d4af37; padding-bottom: 10px; }
         .review-item { background: white; border-radius: 12px; padding: 20px; margin-bottom: 18px; border: 2px solid #e0e0e0; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
         .review-item .review-q-number { font-size: 0.85em; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-        .review-item .review-q-text { font-size: 1.1em; font-weight: 700; color: #232020; margin-bottom: 14px; }
-        .review-item .review-q-image { max-width: 100%; max-height: 160px; border-radius: 8px; margin-bottom: 12px; object-fit: cover; border: 2px solid #d4af37; }
+        .review-item .review-q-text { font-size: 1.1em; font-weight: 700; color: #232020; margin-bottom: 12px; white-space: pre-line; }
+        .review-item .review-q-image { max-width: 100%; max-height: 160px; border-radius: 8px; margin-bottom: 12px; object-fit: cover; border: 2px solid #d4af37; display: block; }
         .review-answers { display: flex; flex-direction: column; gap: 8px; }
         .review-answer-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; font-size: 0.97em; }
-        .review-answer-row .label { font-weight: 700; min-width: 110px; font-size: 0.9em; }
+        .review-answer-row .label { font-weight: 700; min-width: 130px; font-size: 0.9em; }
         .review-answer-row .answer-text { flex: 1; }
         .row-correct { background: #e6f9ee; border: 1.5px solid #27ae60; }
         .row-correct .label { color: #27ae60; }
@@ -139,7 +95,7 @@
                 <div class="hourglass">⏳</div>
                 <div class="waiting-message">
                     <p class="pulse"><strong>Please wait...</strong></p>
-                    <p style="margin-top: 15px;">The moderator will start the quiz shortly.</p>
+                    <p style="margin-top:15px;">The moderator will start the quiz shortly.</p>
                 </div>
             </div>
         </div>
@@ -190,6 +146,8 @@
         const db = getDatabase(app);
         const gameRef = ref(db, 'game');
 
+        const QUESTIONS = [{"question":"Guess the owner: Marv - Yellow Lab\n\nStory: Marv is true to the reputation of a Yellow Labrador he is a great friendly family dog who is ball and food obsessed, he has earned the nick name Starvin Marvin","options":["Jason Murphy","Don Evans","Alison Broten","Burke vonEschen"],"correctIndex":2,"image":"https://i.ibb.co/spHVjGx4/1.jpg"}];
+
         let localState = {
             playerName: '',
             playerId: 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
@@ -197,18 +155,12 @@
             selectedAnswer: null
         };
 
-        let gameState = { questions: [], currentQuestion: 0, status: 'waiting' };
+        let gameState = { questions: QUESTIONS, currentQuestion: 0, status: 'waiting' };
+        localState.answers = new Array(QUESTIONS.length).fill(null);
 
         onValue(gameRef, (snapshot) => {
             const data = snapshot.val();
             if (!data) return;
-
-            if (data.questions) {
-                gameState.questions = data.questions;
-                if (localState.answers.length === 0) {
-                    localState.answers = new Array(data.questions.length).fill(null);
-                }
-            }
 
             if (data.status === 'ready' && document.getElementById('waitingScreen').classList.contains('active')) {
                 document.getElementById('waitingScreen').classList.remove('active');
@@ -223,7 +175,6 @@
                 }
                 gameState.currentQuestion = data.currentQuestion;
                 localState.selectedAnswer = null;
-
                 if (gameState.currentQuestion >= gameState.questions.length) {
                     saveScore();
                 } else {
@@ -262,15 +213,12 @@
             const progress = ((gameState.currentQuestion + 1) / gameState.questions.length) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
             document.getElementById('questionNumber').textContent = 'Question ' + (gameState.currentQuestion + 1) + ' of ' + gameState.questions.length;
+            // Use textContent so \n is rendered via white-space: pre-line CSS
             document.getElementById('questionText').textContent = q.question;
 
             const imgEl = document.getElementById('questionImage');
-            if (q.image) {
-                imgEl.src = q.image;
-                imgEl.style.display = 'block';
-            } else {
-                imgEl.style.display = 'none';
-            }
+            if (q.image) { imgEl.src = q.image; imgEl.style.display = 'block'; }
+            else { imgEl.style.display = 'none'; imgEl.src = ''; }
 
             const container = document.getElementById('optionsContainer');
             container.innerHTML = '';
@@ -341,33 +289,51 @@
                 const item = document.createElement('div');
                 item.className = 'review-item ' + (notAnswered ? 'no-answer' : isCorrect ? 'all-correct' : 'all-wrong');
 
-                let imgHtml = '';
-                if (q.image) imgHtml = '<img class="review-q-image" src="' + q.image + '" alt="Q' + (index+1) + '">';
+                const qNum = document.createElement('div');
+                qNum.className = 'review-q-number';
+                qNum.textContent = 'Question ' + (index + 1);
+                item.appendChild(qNum);
 
-                const playerRowClass = notAnswered ? 'row-not-answered' : isCorrect ? 'row-player-correct' : 'row-player-wrong';
-                const playerLabel = notAnswered ? '⚠️ Your Answer:' : isCorrect ? '🎉 Your Answer:' : '❌ Your Answer:';
-                const playerText = notAnswered ? '<em>No answer selected</em>' : isCorrect ? playerAnswerText + ' — Correct!' : playerAnswerText;
+                const qText = document.createElement('div');
+                qText.className = 'review-q-text';
+                qText.textContent = q.question;
+                item.appendChild(qText);
 
-                item.innerHTML = `
-                    <div class="review-q-number">Question ${index + 1}</div>
-                    <div class="review-q-text">${q.question}</div>
-                    ${imgHtml}
-                    <div class="review-answers">
-                        <div class="review-answer-row row-correct">
-                            <span class="label">✅ Correct Answer:</span>
-                            <span class="answer-text">${correctAnswerText}</span>
-                        </div>
-                        <div class="review-answer-row ${playerRowClass}">
-                            <span class="label">${playerLabel}</span>
-                            <span class="answer-text">${playerText}</span>
-                        </div>
-                    </div>
-                `;
+                if (q.image) {
+                    const img = document.createElement('img');
+                    img.className = 'review-q-image';
+                    img.src = q.image;
+                    img.alt = 'Question ' + (index + 1);
+                    item.appendChild(img);
+                }
+
+                const answersDiv = document.createElement('div');
+                answersDiv.className = 'review-answers';
+
+                const correctRow = document.createElement('div');
+                correctRow.className = 'review-answer-row row-correct';
+                correctRow.innerHTML = '<span class="label">✅ Correct Answer:</span><span class="answer-text">' + correctAnswerText + '</span>';
+                answersDiv.appendChild(correctRow);
+
+                const playerRow = document.createElement('div');
+                if (notAnswered) {
+                    playerRow.className = 'review-answer-row row-not-answered';
+                    playerRow.innerHTML = '<span class="label">⚠️ Your Answer:</span><span class="answer-text"><em>No answer selected</em></span>';
+                } else if (isCorrect) {
+                    playerRow.className = 'review-answer-row row-player-correct';
+                    playerRow.innerHTML = '<span class="label">🎉 Your Answer:</span><span class="answer-text">' + playerAnswerText + ' — Correct!</span>';
+                } else {
+                    playerRow.className = 'review-answer-row row-player-wrong';
+                    playerRow.innerHTML = '<span class="label">❌ Your Answer:</span><span class="answer-text">' + playerAnswerText + '</span>';
+                }
+                answersDiv.appendChild(playerRow);
+                item.appendChild(answersDiv);
                 reviewContainer.appendChild(item);
             });
         }
 
         function showResults() {
+            if (document.getElementById('resultsScreen').classList.contains('active')) return;
             document.getElementById('quizScreen').classList.remove('active');
             document.getElementById('waitingScreen').classList.remove('active');
             document.getElementById('resultsScreen').classList.add('active');
