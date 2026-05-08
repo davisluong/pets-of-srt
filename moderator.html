@@ -3,60 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moderator Setup</title>
+    <title>Moderator — Pet Quiz</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #c94b4b 0%, #4b134f 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            background: #fffef7;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px;
-            border: 3px solid #d4af37;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #c94b4b 0%, #4b134f 100%); min-height: 100vh; padding: 20px; }
+        .container { background: #fffef7; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 800px; margin: 0 auto; padding: 40px; border: 3px solid #d4af37; }
         h1 { color: #c94b4b; text-align: center; margin-bottom: 10px; font-size: 2.5em; }
         .subtitle { text-align: center; color: #2d5016; margin-bottom: 30px; font-size: 1.1em; }
         .screen { display: none; }
         .screen.active { display: block; }
-        button {
-            background: #c94b4b; color: white; border: none;
-            padding: 14px 28px; border-radius: 8px; font-size: 16px;
-            font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px;
-            transition: all 0.3s;
-        }
+        button { background: #c94b4b; color: white; border: none; padding: 14px 28px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; transition: all 0.3s; }
         button:hover { background: #a83939; transform: translateY(-2px); }
         button:disabled { background: #ccc; cursor: not-allowed; transform: none; }
         .options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .option {
-            background: white; padding: 20px; border-radius: 12px;
-            border: 3px solid #d4af37; text-align: center;
-            font-weight: 600; color: #2d5016; font-size: 1.1em;
-        }
+        .option { background: white; padding: 20px; border-radius: 12px; border: 3px solid #d4af37; text-align: center; font-weight: 600; color: #2d5016; font-size: 1.1em; }
         .progress { background: #e8dcc4; height: 8px; border-radius: 4px; margin-bottom: 20px; }
         .progress-bar { background: linear-gradient(90deg, #c94b4b 0%, #2d5016 100%); height: 100%; transition: width 0.3s; }
-        .question-header {
-            background: linear-gradient(135deg, #c94b4b 0%, #2d5016 100%);
-            color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; text-align: center;
-        }
+        .question-header { background: linear-gradient(135deg, #c94b4b 0%, #2d5016 100%); color: white; padding: 30px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
         .question-number { font-size: 1.1em; opacity: 0.9; margin-bottom: 15px; }
-        .question-text { font-size: 1.8em; font-weight: 600; line-height: 1.4; }
-        .question-image {
-            max-width: 100%; max-height: 280px; border-radius: 12px;
-            margin-bottom: 20px; object-fit: cover;
-            border: 3px solid #d4af37; display: block; margin-left: auto; margin-right: auto;
-        }
-        .leaderboard-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px; background: white; border-radius: 12px;
-            margin-bottom: 15px; border-left: 6px solid #d4af37;
-        }
+        .question-text { font-size: 1.8em; font-weight: 600; line-height: 1.5; white-space: pre-line; }
+        .question-image { display: block; max-width: 100%; max-height: 360px; border-radius: 14px; margin: 0 auto 24px auto; object-fit: cover; border: 3px solid #d4af37; box-shadow: 0 4px 20px rgba(0,0,0,0.18); }
+        .leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: white; border-radius: 12px; margin-bottom: 15px; border-left: 6px solid #d4af37; }
         .leaderboard-item.first { background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); border-left-width: 8px; }
         .leaderboard-item.second { background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%); border-left-width: 8px; }
         .leaderboard-item.third { background: linear-gradient(135deg, #cd7f32 0%, #e6a85c 100%); border-left-width: 8px; }
@@ -65,32 +32,15 @@
         .score-detail { font-size: 0.9em; color: #666; }
         .medal { font-size: 2em; margin-right: 10px; }
         .rank { font-size: 2em; font-weight: 700; margin-right: 20px; color: #d4af37; }
-        .waiting-room {
-            background: #f0f8e8; padding: 20px; border-radius: 12px;
-            margin-bottom: 20px; border: 2px solid #2d5016;
-        }
+        .waiting-room { background: #f0f8e8; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 2px solid #2d5016; }
         .waiting-room h3 { color: #c94b4b; margin-bottom: 15px; }
-        .player-badge {
-            display: inline-block; background: #2d5016; color: white;
-            padding: 8px 15px; border-radius: 20px; margin: 5px; font-size: 0.95em;
-        }
-        .next-btn { background: #2d5016; font-size: 1.2em; padding: 18px 35px; }
-        .answer-key {
-            background: #f0f8e8; padding: 20px; border-radius: 12px;
-            margin-top: 30px; border: 2px solid #2d5016;
-        }
+        .player-badge { display: inline-block; background: #2d5016; color: white; padding: 8px 15px; border-radius: 20px; margin: 5px; font-size: 0.95em; }
+        .answer-key { background: #f0f8e8; padding: 20px; border-radius: 12px; margin-top: 30px; border: 2px solid #2d5016; }
         .answer-key h3 { color: #c94b4b; margin-bottom: 15px; text-align: center; }
-        .answer-item {
-            background: white; padding: 12px; border-radius: 8px;
-            margin-bottom: 10px; border-left: 4px solid #2d5016;
-        }
+        .answer-item { background: white; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #2d5016; }
         .answer-item strong { color: #c94b4b; }
         .answer-item .correct-answer { color: #2d5016; font-weight: 600; }
-        .rules-box {
-            background: linear-gradient(135deg, #fffef7 0%, #f0f8e8 100%);
-            border: 2px solid #d4af37; border-radius: 14px;
-            padding: 22px 26px; margin-bottom: 24px;
-        }
+        .rules-box { background: linear-gradient(135deg, #fffef7 0%, #f0f8e8 100%); border: 2px solid #d4af37; border-radius: 14px; padding: 22px 26px; margin-bottom: 24px; }
         .rules-box h3 { color: #c94b4b; font-size: 1.2em; margin-bottom: 14px; border-bottom: 2px solid #d4af37; padding-bottom: 10px; }
         .rules-list { list-style: none; padding: 0; margin: 0; }
         .rules-list li { display: flex; align-items: flex-start; gap: 12px; padding: 9px 0; color: #2d5016; font-size: 1em; line-height: 1.5; border-bottom: 1px dashed #d4af3755; }
@@ -98,7 +48,8 @@
         .rules-list .rule-num { background: #c94b4b; color: white; font-weight: 700; font-size: 0.85em; min-width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .countdown-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
         .countdown-overlay.active { display: flex; }
-        .countdown-circle { width: 180px; height: 180px; border-radius: 50%; background: linear-gradient(135deg, #c94b4b, #4b134f); display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 60px rgba(201,75,75,0.6); }
+        .countdown-circle { width: 180px; height: 180px; border-radius: 50%; background: linear-gradient(135deg, #c94b4b, #4b134f); display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 60px rgba(201,75,75,0.6); animation: scaleIn 0.3s ease; }
+        @keyframes scaleIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .countdown-number { font-size: 3em; font-weight: 900; color: white; line-height: 1; }
         .countdown-label { font-size: .75em; color: rgba(255,255,255,0.85); margin-top: 8px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
     </style>
@@ -121,7 +72,7 @@
                     <li><span class="rule-num">1</span><span>Each correct answer is worth <strong>100 points</strong>.</span></li>
                     <li><span class="rule-num">2</span><span>You can change your answer until the next question begins.</span></li>
                     <li><span class="rule-num">3</span><span>No selection = <strong>0 points</strong> for that question.</span></li>
-                    <li><span class="rule-num">4</span><span>Once we move on, we can't go back.</span></li>
+                    <li><span class="rule-num">4</span><span>Once we move on, we cannot go back.</span></li>
                     <li><span class="rule-num">5</span><span>Good luck and have fun! 🍀</span></li>
                 </ul>
             </div>
@@ -129,7 +80,7 @@
                 <h3>Players Joined (<span id="playerCount">0</span>):</h3>
                 <div id="playersContainer"></div>
             </div>
-            <button onclick="readyForQuiz()" style="background: #2d5016; font-size: 1.2em;">✅ Ready For Quiz</button>
+            <button onclick="readyForQuiz()" style="background:#2d5016; font-size:1.2em;">✅ Ready For Quiz</button>
         </div>
 
         <div id="quizScreen" class="screen">
@@ -140,21 +91,21 @@
             </div>
             <img id="questionImage" class="question-image" style="display:none;" alt="Question image">
             <div class="options" id="optionsContainer"></div>
-            <button id="nextBtn" onclick="handleNextQuestion()" class="next-btn" style="margin-top: 30px;">Next Question ➡️</button>
-            <button id="showResultsBtn" onclick="showResults()" style="display: none; margin-top: 30px; background: #2d5016; font-size: 1.2em;">Show Final Results 🏆</button>
+            <button id="nextBtn" onclick="handleNextQuestion()" style="background:#2d5016; margin-top:30px;">Next Question ➡️</button>
+            <button id="showResultsBtn" onclick="showResults()" style="display:none; margin-top:30px; background:#c94b4b; font-size:1.2em;">Show Final Results 🏆</button>
         </div>
 
         <div id="resultsScreen" class="screen">
             <h1>🏆 Final Results 🏆</h1>
             <p class="subtitle">Congratulations!</p>
-            <div id="leaderboard" style="margin-bottom: 20px;"></div>
+            <div id="leaderboard" style="margin-bottom:20px;"></div>
             <div class="answer-key" id="answerKey"></div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, set, onValue, update, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getDatabase, ref, update, onValue, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyBOpVXZVm9qKMqxDqRQw55BgDXhbh-9ibI",
@@ -170,27 +121,21 @@
         const db = getDatabase(app);
         const gameRef = ref(db, 'game');
 
-        const QUESTIONS = [];
-
+        const QUESTIONS = [{"question":"Guess the owner: Marv - Yellow Lab\n\nStory: Marv is true to the reputation of a Yellow Labrador he is a great friendly family dog who is ball and food obsessed, he has earned the nick name Starvin Marvin","options":["Jason Murphy","Don Evans","Alison Broten","Burke vonEschen"],"correctIndex":2,"image":"https://i.ibb.co/spHVjGx4/1.jpg"}];
         let gameState = { questions: QUESTIONS, currentQuestion: 0 };
 
-        // Initialize game on load
         remove(ref(db, 'game/players'));
         remove(ref(db, 'game/scores'));
-        update(gameRef, {
-            questions: QUESTIONS,
-            status: 'waiting',
-            currentQuestion: 0
-        });
+        update(gameRef, { questions: QUESTIONS, status: 'waiting', currentQuestion: 0 });
 
         onValue(ref(db, 'game/players'), (snapshot) => {
             const players = snapshot.val() || {};
             const container = document.getElementById('playersContainer');
             const count = document.getElementById('playerCount');
-            const playerNames = Object.values(players).map(p => p.name);
-            count.textContent = playerNames.length;
-            container.innerHTML = playerNames.length === 0 ? '<p style="color:#666;">Waiting for players...</p>' : '';
-            playerNames.forEach(name => {
+            const names = Object.values(players).map(p => p.name);
+            count.textContent = names.length;
+            container.innerHTML = names.length === 0 ? '<p style="color:#666;">Waiting for players...</p>' : '';
+            names.forEach(name => {
                 const badge = document.createElement('span');
                 badge.className = 'player-badge';
                 badge.textContent = name;
@@ -218,12 +163,8 @@
             document.getElementById('questionText').textContent = q.question;
 
             const imgEl = document.getElementById('questionImage');
-            if (q.image) {
-                imgEl.src = q.image;
-                imgEl.style.display = 'block';
-            } else {
-                imgEl.style.display = 'none';
-            }
+            if (q.image) { imgEl.src = q.image; imgEl.style.display = 'block'; }
+            else { imgEl.style.display = 'none'; imgEl.src = ''; }
 
             const container = document.getElementById('optionsContainer');
             container.innerHTML = '';
@@ -249,9 +190,8 @@
             overlay.classList.add('active');
             const interval = setInterval(() => {
                 count--;
-                if (count > 0) {
-                    numberEl.textContent = count;
-                } else {
+                if (count > 0) { numberEl.textContent = count; }
+                else {
                     clearInterval(interval);
                     overlay.classList.remove('active');
                     nextBtn.disabled = false;
@@ -289,7 +229,7 @@
                     gameState.questions.forEach((q, i) => {
                         const item = document.createElement('div');
                         item.className = 'answer-item';
-                        item.innerHTML = '<strong>Q' + (i+1) + '.</strong> ' + q.question + '<br><span class="correct-answer">Answer: ' + q.options[q.correctIndex] + '</span>';
+                        item.innerHTML = '<strong>Q' + (i+1) + '.</strong> ' + q.question.split('\n')[0] + '<br><span class="correct-answer">✅ ' + q.options[q.correctIndex] + '</span>';
                         answerKey.appendChild(item);
                     });
                 }, { onlyOnce: true });
