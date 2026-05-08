@@ -7,7 +7,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #c94b4b 0%, #4b134f 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .container { background: #fffef7; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 800px; width: 100%; padding: 40px; border: 3px solid #d4af37; }
+        .container { background: #fffef7; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 900px; width: 100%; padding: 40px; border: 3px solid #d4af37; }
         h1 { color: #c94b4b; text-align: center; margin-bottom: 10px; font-size: 2.5em; }
         h2 { color: #232020; text-align: center; margin-bottom: 10px; font-size: 1.8em; }
         .subtitle { text-align: center; color: #2d5016; margin-bottom: 30px; font-size: 1.1em; }
@@ -32,10 +32,34 @@
         .waiting-message { font-size: 1.2em; color: #2d5016; margin-top: 20px; line-height: 1.6; }
         .pulse { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .question-header { background: linear-gradient(135deg, #c94b4b 0%, #2d5016 100%); color: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; text-align: center; }
-        .question-number { font-size: 0.9em; opacity: 0.9; margin-bottom: 10px; }
-        .question-text { font-size: 1.4em; font-weight: 600; line-height: 1.6; white-space: pre-line; }
-        .question-image { display: block; max-width: 100%; max-height: 320px; border-radius: 14px; margin: 0 auto 20px auto; object-fit: cover; border: 3px solid #d4af37; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+
+        /* ── Side-by-side question layout ── */
+        .question-header {
+            background: linear-gradient(135deg, #c94b4b 0%, #2d5016 100%);
+            color: white; padding: 20px; border-radius: 12px; margin-bottom: 16px;
+        }
+        .question-number { font-size: 0.9em; opacity: 0.9; margin-bottom: 10px; text-align: center; }
+        .question-body {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .question-text-wrap { flex: 1; }
+        /* Reduced 1 size: was 1.4em → now 1.2em */
+        .question-text { font-size: 1.2em; font-weight: 600; line-height: 1.6; white-space: pre-line; }
+        .question-image-wrap { flex-shrink: 0; }
+        .question-image {
+            width: 220px;
+            height: 180px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 3px solid #d4af37;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            display: block;
+        }
+        /* When no image, question text takes full width */
+        .question-body.no-image .question-text { text-align: center; }
+
         .error-message { background: #ffe6e6; color: #8b0000; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: none; }
         .error-message.show { display: block; }
         .info-box { background: #f0f8e8; padding: 15px; border-radius: 8px; margin-top: 20px; border: 2px solid #2d5016; }
@@ -51,8 +75,9 @@
         .review-container h3 { color: #c94b4b; text-align: center; margin-bottom: 20px; font-size: 1.4em; border-bottom: 2px solid #d4af37; padding-bottom: 10px; }
         .review-item { background: white; border-radius: 12px; padding: 20px; margin-bottom: 18px; border: 2px solid #e0e0e0; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
         .review-item .review-q-number { font-size: 0.85em; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-        .review-item .review-q-text { font-size: 1.1em; font-weight: 700; color: #232020; margin-bottom: 12px; white-space: pre-line; }
-        .review-item .review-q-image { max-width: 100%; max-height: 160px; border-radius: 8px; margin-bottom: 12px; object-fit: cover; border: 2px solid #d4af37; display: block; }
+        .review-q-body { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 12px; }
+        .review-q-body .review-q-text { flex: 1; font-size: 1.1em; font-weight: 700; color: #232020; white-space: pre-line; }
+        .review-q-body .review-q-image { width: 120px; height: 90px; border-radius: 8px; object-fit: cover; border: 2px solid #d4af37; flex-shrink: 0; }
         .review-answers { display: flex; flex-direction: column; gap: 8px; }
         .review-answer-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; font-size: 0.97em; }
         .review-answer-row .label { font-weight: 700; min-width: 130px; font-size: 0.9em; }
@@ -68,6 +93,13 @@
         .review-item.all-correct { border-color: #27ae60; }
         .review-item.all-wrong { border-color: #e74c3c; }
         .review-item.no-answer { border-color: #f39c12; }
+
+        @media (max-width: 600px) {
+            .question-body { flex-direction: column; }
+            .question-image { width: 100%; height: 200px; }
+            .review-q-body { flex-direction: column; }
+            .review-q-body .review-q-image { width: 100%; height: 140px; }
+        }
     </style>
 </head>
 <body>
@@ -104,9 +136,15 @@
             <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
             <div class="question-header">
                 <div class="question-number" id="questionNumber">Question 1 of 5</div>
-                <div class="question-text" id="questionText">Loading question...</div>
+                <div class="question-body" id="questionBody">
+                    <div class="question-text-wrap">
+                        <div class="question-text" id="questionText">Loading question...</div>
+                    </div>
+                    <div class="question-image-wrap" id="questionImageWrap" style="display:none;">
+                        <img id="questionImage" class="question-image" alt="Question image">
+                    </div>
+                </div>
             </div>
-            <img id="questionImage" class="question-image" style="display:none;" alt="Question image">
             <div class="options" id="optionsContainer"></div>
             <div class="selection-status" id="selectionStatus">Click an option to select your answer.</div>
         </div>
@@ -213,12 +251,19 @@
             const progress = ((gameState.currentQuestion + 1) / gameState.questions.length) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
             document.getElementById('questionNumber').textContent = 'Question ' + (gameState.currentQuestion + 1) + ' of ' + gameState.questions.length;
-            // Use textContent so \n is rendered via white-space: pre-line CSS
             document.getElementById('questionText').textContent = q.question;
 
+            const imgWrap = document.getElementById('questionImageWrap');
             const imgEl = document.getElementById('questionImage');
-            if (q.image) { imgEl.src = q.image; imgEl.style.display = 'block'; }
-            else { imgEl.style.display = 'none'; imgEl.src = ''; }
+            const body = document.getElementById('questionBody');
+            if (q.image) {
+                imgEl.src = q.image;
+                imgWrap.style.display = 'block';
+                body.classList.remove('no-image');
+            } else {
+                imgWrap.style.display = 'none';
+                body.classList.add('no-image');
+            }
 
             const container = document.getElementById('optionsContainer');
             container.innerHTML = '';
@@ -294,18 +339,23 @@
                 qNum.textContent = 'Question ' + (index + 1);
                 item.appendChild(qNum);
 
+                // Side-by-side in review too
+                const qBody = document.createElement('div');
+                qBody.className = 'review-q-body';
+
                 const qText = document.createElement('div');
                 qText.className = 'review-q-text';
                 qText.textContent = q.question;
-                item.appendChild(qText);
+                qBody.appendChild(qText);
 
                 if (q.image) {
                     const img = document.createElement('img');
                     img.className = 'review-q-image';
                     img.src = q.image;
                     img.alt = 'Question ' + (index + 1);
-                    item.appendChild(img);
+                    qBody.appendChild(img);
                 }
+                item.appendChild(qBody);
 
                 const answersDiv = document.createElement('div');
                 answersDiv.className = 'review-answers';
