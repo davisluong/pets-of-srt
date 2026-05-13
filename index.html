@@ -32,34 +32,14 @@
         .waiting-message { font-size: 1.2em; color: #2d5016; margin-top: 20px; line-height: 1.6; }
         .pulse { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
-        /* ── Side-by-side question layout ── */
-        .question-header {
-            background: linear-gradient(135deg, #c94b4b 0%, #2d5016 100%);
-            color: white; padding: 20px; border-radius: 12px; margin-bottom: 16px;
-        }
+        .question-header { background: linear-gradient(135deg, #c94b4b 0%, #2d5016 100%); color: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; }
         .question-number { font-size: 0.9em; opacity: 0.9; margin-bottom: 10px; text-align: center; }
-        .question-body {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+        .question-body { display: flex; align-items: center; gap: 20px; }
         .question-text-wrap { flex: 1; }
-        /* Reduced 1 size: was 1.4em → now 1.2em */
-        .question-text { font-size: 1.2em; font-weight: 600; line-height: 1.6; white-space: pre-line; }
+        .question-text { font-size: 1.05em; font-weight: 600; line-height: 1.6; white-space: pre-line; }
         .question-image-wrap { flex-shrink: 0; }
-        .question-image {
-            width: 220px;
-            height: 180px;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 3px solid #d4af37;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-            display: block;
-        }
-        /* When no image, question text takes full width */
-        .question-body.no-image .question-text { text-align: center; }
-
+        .question-image { width: 300px; height: 240px; border-radius: 12px; object-fit: cover; border: 3px solid #d4af37; box-shadow: 0 4px 16px rgba(0,0,0,0.2); display: block; }
+        .question-body.no-image .question-text { text-align: center; font-size: 1.2em; }
         .error-message { background: #ffe6e6; color: #8b0000; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: none; }
         .error-message.show { display: block; }
         .info-box { background: #f0f8e8; padding: 15px; border-radius: 8px; margin-top: 20px; border: 2px solid #2d5016; }
@@ -74,10 +54,10 @@
         .review-container { margin-top: 20px; }
         .review-container h3 { color: #c94b4b; text-align: center; margin-bottom: 20px; font-size: 1.4em; border-bottom: 2px solid #d4af37; padding-bottom: 10px; }
         .review-item { background: white; border-radius: 12px; padding: 20px; margin-bottom: 18px; border: 2px solid #e0e0e0; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
-        .review-item .review-q-number { font-size: 0.85em; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-        .review-q-body { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 12px; }
-        .review-q-body .review-q-text { flex: 1; font-size: 1.1em; font-weight: 700; color: #232020; white-space: pre-line; }
-        .review-q-body .review-q-image { width: 120px; height: 90px; border-radius: 8px; object-fit: cover; border: 2px solid #d4af37; flex-shrink: 0; }
+        .review-item .review-q-number { font-size: 0.85em; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .review-q-body { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
+        .review-q-body .review-q-text { flex: 1; font-size: 1em; font-weight: 700; color: #232020; white-space: pre-line; line-height: 1.5; }
+        .review-q-body .review-q-image { width: 140px; height: 110px; border-radius: 10px; object-fit: cover; border: 2px solid #d4af37; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .review-answers { display: flex; flex-direction: column; gap: 8px; }
         .review-answer-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; font-size: 0.97em; }
         .review-answer-row .label { font-weight: 700; min-width: 130px; font-size: 0.9em; }
@@ -93,13 +73,7 @@
         .review-item.all-correct { border-color: #27ae60; }
         .review-item.all-wrong { border-color: #e74c3c; }
         .review-item.no-answer { border-color: #f39c12; }
-
-        @media (max-width: 600px) {
-            .question-body { flex-direction: column; }
-            .question-image { width: 100%; height: 200px; }
-            .review-q-body { flex-direction: column; }
-            .review-q-body .review-q-image { width: 100%; height: 140px; }
-        }
+        @media (max-width: 600px) { .question-body { flex-direction: column; } .question-image { width: 100%; height: 200px; } .review-q-body { flex-direction: column; } .review-q-body .review-q-image { width: 100%; height: 160px; } }
     </style>
 </head>
 <body>
@@ -184,7 +158,7 @@
         const db = getDatabase(app);
         const gameRef = ref(db, 'game');
 
-        const QUESTIONS = [{"question":"Guess the owner: Marv - Yellow Lab\n\nStory: Marv is true to the reputation of a Yellow Labrador he is a great friendly family dog who is ball and food obsessed, he has earned the nick name Starvin Marvin","options":["Jason Murphy","Don Evans","Alison Broten","Burke vonEschen"],"correctIndex":2,"image":"https://i.ibb.co/spHVjGx4/1.jpg"}];
+        const QUESTIONS = [{"question":"Guess the owner: Marv - Yellow Lab\n\nStory: Marv is true to the reputation of a Yellow Labrador he is a great friendly family dog who is ball and food obsessed, he has earned the nick name Starvin Marvin","options":["Jason Murphy","Don Evans","Alison Broten","Burke vonEschen"],"correctIndex":2,"image":"https://i.ibb.co/Ng3CZqD5/1.jpg"},{"question":"Guess the owner: Baby Gargoyle possibly?? Just kidding, he's a French Bulldog - Kimbo\n\nStory: When he was 3 Months old, a TELUS commercial would always grab his attention. Wasn't sure if it was the hopping Bunnies on the screen or if it was the Austin Powers music.","options":["Kenneth Pun","Jamie Czerwinski","Illya Kochergin","Kenneth Chahal"],"correctIndex":3,"image":"https://i.ibb.co/6778hdyT/2.png"},{"question":"Guess the owner: Pasha - Mixed Cat\n\nStory: By day, my cat is the sweetest thing alive. But at night, he loses his mind. He enters a high-stakes wrestling match with an imaginary opponent in the middle of the living room. I don’t know who he’s fighting, but based on his acts, I’m just glad he’s winning.","options":["Joan Silva","Warlita Fuentes","Soheila Gohar","Michelle Cepada"],"correctIndex":2,"image":"https://i.ibb.co/7NXTgN5x/3.jpg"},{"question":"Guess the owner: Oscar - Husky Mix\n\nStory:","options":["Chris Moreau","Daniel Noel","Raph Tremblay","Tyler Mooi"],"correctIndex":0,"image":"https://i.ibb.co/KcTRV22t/4.jpg"},{"question":"Guess the owner: Hoji - Pomeranian\n\nStory: We were working on the front yard and Hoji was just hanging around doing his usual, sniffing around. We didn't notice but there was someone jogging past our house. As we were busy, Hoji quickly followed behind the person jogging and they went down the street for a stroll. Funny thing is that she didn't even notice because she had headphones on. We had to run after him and call him back. Sometimes hes a little too friendly 😅","options":["Sam Capuchino","Davis Luong","Shane Bradley","Aamer Qadeer"],"correctIndex":1,"image":"https://i.ibb.co/qYDhjvrK/5.jpg"},{"question":"Guess the owner: Kali & Kiki - Domestic Short-hair Cat\n\nStory: Not only do our cats love watching all the birds and neighbours out the windows they are also obsessed with watching TV & devices. We regularly turn on the on demand TELUS Canadian Bird Nerd on demand channel or another \"Cat TV\" channels on YouTube. They have been known to nudge the cell or iPad in our hands asking for a video to watch.","options":["Deanna Culp","Ansel Schmidt","Arshi Islam","Kristine Sembaluk"],"correctIndex":3,"image":"https://i.ibb.co/DHxGRWjX/6.jpg"},{"question":"Guess the owner: Sourdough starter named Sonia\n\nStory: I created Sonia during covid, so she is now 6 years old, I share her with anyone who would like to try and make Sourdough, i even mailed some to my Mom in the UK. I also like to share fresh bread with friends and family!","options":["Chris Havlin","Chelsea Genereux","Kelly Fitchett","Saad Siddiqui"],"correctIndex":2,"image":"https://i.ibb.co/JjFnYr49/7.jpg"},{"question":"Guess the owner: Sunny - Golden Lab\n\nStory: Sunny is a foster dog and was being trained to be a service animal. When you think of service dogs, you might think of serious with mellow attitude. Well, Sunny was totally the opposite and a big goof. She would often surprise us by showing not one, not two, not three, but four toys stuffed into her jaw. We honestly thought she dislocated her jaw so she could fit these toys in her mouth.\n\nOne day, we had given Sunny a bone. The goofball disappeared for a while and returned showing us that she had finished the bone. Low and behold, she got it stuck on her lower jaw -- but Sunny didn't realize that until she went to try and drink some water! \n\nShe ended up being okay, it required taking her to the vet to saw the bone off. It also happened a second time, some months later.","options":["Kameron Cheng","Richard Hausauer","Carlos Medina","Sanjay Bondili"],"correctIndex":0,"image":"https://i.ibb.co/zhww6bFk/8.jpg"},{"question":"Guess the owner: Butter - Poodle, Peanut - Mongrel/Aspin, Cheddar - Golden Retriever, Mau - Callico Tabby\n\nStory: My Golden Retriever,Cheddar, loves to eat anything. One day, my husband bought some rice cake from a vendor that walks around the neighborhood. Since then, whenever he hears the sound of the horn from the rice cake vendor, even if it is still blocks away, he would start whining and nudge my arm as if saying Mooooom he's here go out now or you might miss him 🤣. I uploaded that video in our Tiktok account and surprisingly Cheddar became a star with 36k views in just a few hours (now at 121k views and running). He demands to have his rice cake daily; and not just him, but now the whole pack addicted to rice cakes and gets super excited doing zoomies and all when they hear that very familiar sound as it approach our house (except the cat)","options":["Camille Simbria","Joselito Manansala","Precious Valor","Arnold Altre"],"correctIndex":2,"image":"https://i.ibb.co/b54JxsvD/9.jpg"},{"question":"Guess the owner: Cody - Australian Cattle Dog Mix\n\nStory: Some of Cody's favourite things to do are mountain biking and hiking in the forest. The photo of him is from a trip to the Sunshine Coast where he discovered some secret tree stump carvings hidden in the woods.","options":["Darren Wearmouth","Qassim Moolla","Ziyaad Sayhebolay","Mihaela Kandeva"],"correctIndex":1,"image":"https://i.ibb.co/V021fXjC/10.jpg"}];
 
         let localState = {
             playerName: '',
@@ -256,14 +230,8 @@
             const imgWrap = document.getElementById('questionImageWrap');
             const imgEl = document.getElementById('questionImage');
             const body = document.getElementById('questionBody');
-            if (q.image) {
-                imgEl.src = q.image;
-                imgWrap.style.display = 'block';
-                body.classList.remove('no-image');
-            } else {
-                imgWrap.style.display = 'none';
-                body.classList.add('no-image');
-            }
+            if (q.image) { imgEl.src = q.image; imgWrap.style.display = 'block'; body.classList.remove('no-image'); }
+            else { imgWrap.style.display = 'none'; body.classList.add('no-image'); }
 
             const container = document.getElementById('optionsContainer');
             container.innerHTML = '';
@@ -339,7 +307,7 @@
                 qNum.textContent = 'Question ' + (index + 1);
                 item.appendChild(qNum);
 
-                // Side-by-side in review too
+                // Side-by-side: question text left, image right
                 const qBody = document.createElement('div');
                 qBody.className = 'review-q-body';
 
